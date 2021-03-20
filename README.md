@@ -1,6 +1,6 @@
 **Status:** Archive (code is provided as-is, no updates expected)
 
-# Multi-Agent Particle Environment
+# A revised version of Multi-Agent Particle Environment
 
 A simple multi-agent particle world with a continuous observation and discrete action space, along with some basic simulated physics.
 Used in the paper [Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments](https://arxiv.org/pdf/1706.02275.pdf).
@@ -12,7 +12,7 @@ Used in the paper [Multi-Agent Actor-Critic for Mixed Cooperative-Competitive En
 - To interactively view moving to landmark scenario (see others in ./scenarios/):
 `bin/interactive.py --scenario simple.py`
 
-- Known dependencies: Python (3.5.4), OpenAI gym (0.10.5), numpy (1.14.5)
+- Known dependencies: Python (3.8.8), OpenAI gym (0.18.0), numpy (1.19.2)
 
 - To use the environments, look at the code for importing them in `make_env.py`.
 

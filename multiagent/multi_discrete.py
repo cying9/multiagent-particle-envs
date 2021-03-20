@@ -1,10 +1,9 @@
 # An old version of OpenAI Gym's multi_discrete.py. (Was getting affected by Gym updates)
 # (https://github.com/openai/gym/blob/1fb81d4e3fb780ccf77fec731287ba07da35eb84/gym/spaces/multi_discrete.py)
 
+import gym
 import numpy as np
 
-import gym
-from gym.spaces import prng
 
 class MultiDiscrete(gym.Space):
     """
@@ -26,11 +25,13 @@ class MultiDiscrete(gym.Space):
         self.low = np.array([x[0] for x in array_of_param_array])
         self.high = np.array([x[1] for x in array_of_param_array])
         self.num_discrete_space = self.low.shape[0]
+        self._np_random = np.random.RandomState()
+        self.nvec = (self.high - self.low + 1).astype(self.low.dtype)
 
     def sample(self):
         """ Returns a array with one sample from each discrete action space """
         # For each row: round(random .* (max - min) + min, 0)
-        random_array = prng.np_random.rand(self.num_discrete_space)
+        random_array = self._np_random.rand(self.num_discrete_space)
         return [int(x) for x in np.floor(np.multiply((self.high - self.low + 1.), random_array) + self.low)]
     def contains(self, x):
         return len(x) == self.num_discrete_space and (np.array(x) >= self.low).all() and (np.array(x) <= self.high).all()
@@ -42,3 +43,20 @@ class MultiDiscrete(gym.Space):
         return "MultiDiscrete" + str(self.num_discrete_space)
     def __eq__(self, other):
         return np.array_equal(self.low, other.low) and np.array_equal(self.high, other.high)
+
+
+if __name__ ==  "__main__":
+    # examples
+    from gym.spaces import MultiDiscrete as MDiscrete
+    md1 = MultiDiscrete([[0, 4], [0, 9]])
+    sp = [md1.sample() for i in range(100)]
+    d1 = [x[0] for x in sp]
+    d2 = [x[1] for x in sp]
+    print(min(d1), min(d2), max(d1), max(d2))
+
+    # difference to gym.spaces.multiDiscrete
+    md2 = MDiscrete(md1.high - md1.low + 1)
+    sp = [md2.sample() for i in range(100)]
+    d1 = [x[0] for x in sp]
+    d2 = [x[1] for x in sp]
+    print(min(d1), min(d2), max(d1), max(d2))

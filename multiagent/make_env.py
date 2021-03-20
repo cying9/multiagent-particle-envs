@@ -37,8 +37,30 @@ def make_env(scenario_name, benchmark=False):
     # create world
     world = scenario.make_world()
     # create multiagent environment
-    if benchmark:        
-        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, scenario.benchmark_data)
+    if benchmark:
+        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward,
+                            scenario.observation, scenario.benchmark_data)
     else:
-        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation)
+        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward,
+                            scenario.observation)
     return env
+
+
+if __name__ == "__main__":
+    import numpy as np
+    env = make_env("simple_reference")
+    env.discrete_action_input = True
+    obs = env.reset()
+    print("N of Agents: ", env.n)
+    print("Obs dims: ", [x.shape for x in env.observation_space])
+    print("Act dims: ", [x.shape for x in env.action_space])
+
+    rews = []
+    for step in range(100):
+        act_n = [x.sample() for x in env.action_space]
+        obs2_n, rew_n, done_n, _ = env.step(act_n)
+        rews.append(rew_n)
+        if all(done_n):
+            break
+
+    print(np.array(rews))
